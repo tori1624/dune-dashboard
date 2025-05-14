@@ -9,20 +9,15 @@ Dune Profile : [https://dune.com/dane01](https://dune.com/dane01)
 
 ## 🔍 대상 프로젝트 및 설명
 
-1. **Pumpspace** ([Dune link](https://dune.com/dane01/pumpspace))
-   - PumpSpace is the best fair launch protocol for MEME coins on the avalanche blockchain (AVAX).
-     
-2. **[Mizu] HyperEVM Vaults** ([Dune link](https://dune.com/dane01/mizu-hyperevm-royco))
-   - The HyperEVM vaults are automated DeFi strategy vaults that provide users with a simple access point to use their assets in the Hyperliquid ecosystem.
-     
-3. **Aster - USDF** ([Dune link](https://dune.com/dane01/aster-usdf))
-   - Aster is our unified vision to simplify and elevate the DeFi experience. $USDF is a fully collateralized stablecoin issued by Aster with custodial services provided by Ceffu.
-     
-4. **Redbrick** ([Dune link](https://dune.com/dane01/redbrick))
-   - Redbrick is a next-generation gaming engine powered by AI, making game creation faster, easier, and more accessible to everyone.
-     
-5. **Glow Finance** ([Dune link](https://dune.com/dane01/glow-finance))
-   - Glow Finance offers advanced DeFi solutions designed to maximize capital efficiency and optimize yield strategies.
+<br/>
+
+| 프로젝트 | Dune | 설명 |
+|------|---------|-------------|
+| Pumpspace | [Link](https://dune.com/dane01/pumpspace) | PumpSpace is the best fair launch protocol for MEME coins on the avalanche blockchain (AVAX). |
+| [Mizu] HyperEVM Vaults | [Link](https://dune.com/dane01/mizu-hyperevm-royco) | The HyperEVM vaults are automated DeFi strategy vaults that provide users with a simple access point to use their assets in the Hyperliquid ecosystem. |
+| Aster - USDF | [Link](https://dune.com/dane01/aster-usdf) | Aster is our unified vision to simplify and elevate the DeFi experience. $USDF is a fully collateralized stablecoin issued by Aster with custodial services provided by Ceffu. |
+| Redbrick | [Link](https://dune.com/dane01/redbrick) | Redbrick is a next-generation gaming engine powered by AI, making game creation faster, easier, and more accessible to everyone. |
+| Glow Finance | [Link](https://dune.com/dane01/glow-finance) | Glow Finance offers advanced DeFi solutions designed to maximize capital efficiency and optimize yield strategies. |
   
 <br/>
 
