@@ -19,6 +19,7 @@ Dune Profile : [https://dune.com/dane01](https://dune.com/dane01)
 | Redbrick | [Link](https://dune.com/dane01/redbrick) | Redbrick is a next-generation gaming engine powered by AI, making game creation faster, easier, and more accessible to everyone. |
 | Glow Finance | [Link](https://dune.com/dane01/glow-finance) | Glow Finance offers advanced DeFi solutions designed to maximize capital efficiency and optimize yield strategies. |
 | TAC | [Link](https://dune.com/dane01/tac-ecosystem-vault) | TAC provides EVM compatibility for the TON blockchain, creating a bridge that allows Ethereum developers to build applications that interact with TON without learning TON's native programming language. |
+| HyperUnit | [Link](https://dune.com/dane01/hyperunit) | Unit is the asset tokenization layer on Hyperliquid, enabling seamless deposits and withdrawals for a wide range of assets. |
   
 <br/>
 
