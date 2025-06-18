@@ -20,6 +20,7 @@ Dune Profile : [https://dune.com/dane01](https://dune.com/dane01)
 | Glow Finance | [Link](https://dune.com/dane01/glow-finance) | Glow Finance offers advanced DeFi solutions designed to maximize capital efficiency and optimize yield strategies. |
 | TAC | [Link](https://dune.com/dane01/tac-ecosystem-vault) | TAC provides EVM compatibility for the TON blockchain, creating a bridge that allows Ethereum developers to build applications that interact with TON without learning TON's native programming language. |
 | HyperUnit | [Link](https://dune.com/dane01/hyperunit) | Unit is the asset tokenization layer on Hyperliquid, enabling seamless deposits and withdrawals for a wide range of assets. |
+| Yala | [Link](https://dune.com/dane01/yala) | Yala is a Bitcoin-native liquidity protocol that enables Bitcoin holders earn real yield from DeFi and RWAs without giving up ownership of their assets. |
   
 <br/>
 
@@ -30,39 +31,4 @@ Dune Profile : [https://dune.com/dane01](https://dune.com/dane01)
 ## 🛠️ 기술 스택
 - PostgreSQL
 - Dune
-<br/>
-
-## 📁 폴더 구조
-```text
-dune-dashboard/
-├── aster/
-│ └── asusdf_stable_LP.sql
-│ └── usdf.sql
-│ └── usdf_stable_LP.sql
-├── glow-finance/
-│ └── glowSOL_holders.sql
-│ └── glowSOL_holders_newOld.sql
-│ └── glowSOL_supply.sql
-├── hyperEVM/
-│ └── hyperEVM.sql
-├── pumpspace/
-│ └── meme_launchpad.sql
-│ └── tokens_information.sql
-├── pumpspace/
-│ └── daily_reward.sql
-│ └── land_holders.sql
-├── tac/
-│ └── tac_ecosystemVault.sql
-└── README.md
-```
-
-<br/>
-
-## ⚙️ 실행 방법
-```text
-1. Dune 접속 및 로그인
-2. 좌측 탭 중 Create > New query
-3. 코드 복사, 붙여넣기 후 실행
-```
-
 <br/>
