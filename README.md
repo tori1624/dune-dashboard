@@ -21,6 +21,7 @@ Dune Profile : [https://dune.com/dane01](https://dune.com/dane01)
 | TAC | [Link](https://dune.com/dane01/tac-ecosystem-vault) | TAC provides EVM compatibility for the TON blockchain, creating a bridge that allows Ethereum developers to build applications that interact with TON without learning TON's native programming language. |
 | HyperUnit | [Link](https://dune.com/dane01/hyperunit) | Unit is the asset tokenization layer on Hyperliquid, enabling seamless deposits and withdrawals for a wide range of assets. |
 | Yala | [Link](https://dune.com/dane01/yala) | Yala is a Bitcoin-native liquidity protocol that enables Bitcoin holders earn real yield from DeFi and RWAs without giving up ownership of their assets. |
+| Noya AI | [Link](https://dune.com/dane01/noya-ai) | NOYA represents a paradigm shift in decentralized finance, introducing a protocol that empowers AI agents to control liquidity across multiple chains with unparalleled trustlessness and precision. |
   
 <br/>
 
