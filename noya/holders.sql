@@ -7,13 +7,13 @@ with nmorpho_usd as (
         (select 
             "to" as addr, 
             value / 1e6 as amount
-        from erc20_ethereum.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0x8603A9AF9D6812A96dCA4c2C40C5025601DEDcF8
         UNION ALL 
         select 
             "from" as addr, 
             -value / 1e6 as amount
-        from erc20_ethereum.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0x8603A9AF9D6812A96dCA4c2C40C5025601DEDcF8
         )
     where addr <> 0x0000000000000000000000000000000000000000
@@ -29,13 +29,13 @@ bnmorpho_usd as (
         (select 
             "to" as addr, 
             value / 1e6 as amount
-        from erc20_ethereum.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0xB61E561f62D572197e59880a9F69fc6cb4463115
         UNION ALL 
         select 
             "from" as addr, 
             -value / 1e6 as amount
-        from erc20_ethereum.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0xB61E561f62D572197e59880a9F69fc6cb4463115
         )
     where addr <> 0x0000000000000000000000000000000000000000
