@@ -12,7 +12,7 @@ with nmorpho_usd as (
         
         select evt_block_time
              , -cast(value as double)/1e6 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0x8603A9AF9D6812A96dCA4c2C40C5025601DEDcF8
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -32,7 +32,7 @@ bnmorpho_usd as (
         
         select evt_block_time
              , -cast(value as double)/1e6 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0xB61E561f62D572197e59880a9F69fc6cb4463115
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -52,7 +52,7 @@ nmorpho_eth as (
         
         select evt_block_time
              , -cast(value as double)/1e18 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0xe133fb96ba6F4C35280FdD6a7E6381694d8B8347
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -72,7 +72,7 @@ bnmorpho_eth as (
         
         select evt_block_time
              , -cast(value as double)/1e18 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0x168E80D05ee1d63aAcb682e0Def1B02BC4d45de8
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -92,7 +92,7 @@ nmorpho_usd_loop as (
         
         select evt_block_time
              , -cast(value as double)/1e6 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0xB1bb9583f5A74CED10e413Cc44245e05843BADEE
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -112,7 +112,7 @@ bnmorpho_usd_loop as (
         
         select evt_block_time
              , -cast(value as double)/1e6 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0xA04FCCc48AeB3C0Fbc5c6F8d98dB8f6be3f65979
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -132,7 +132,7 @@ nmorpho_eth_loop as (
         
         select evt_block_time
              , -cast(value as double)/1e18 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0x062e9eE0eeBF0EDdfC2Dd79DAd905F3B4C7838cB
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
@@ -152,7 +152,7 @@ bnmorpho_eth_loop as (
         
         select evt_block_time
              , -cast(value as double)/1e18 as amount
-        from erc20_bnb.evt_transfer
+        from erc20_base.evt_transfer
         where contract_address = 0x5b08789eD14F37ffA67236088D03692528A96c5c
         and to = 0x0000000000000000000000000000000000000000
         ) as raw 
