@@ -10,6 +10,7 @@ with vaults as (
         (0x5b08789eD14F37ffA67236088D03692528A96c5c, 'bnmorpho_eth_loop')
     ) as t(contract_address, vault_type)
 ),
+
 transfers as (
     select 
         t.vault_type,
@@ -20,6 +21,7 @@ transfers as (
       on e.contract_address = t.contract_address
     where coalesce(e."to", e."from") <> 0x0000000000000000000000000000000000000000
 ),
+
 aggregated as (
     select
         addr,
@@ -29,8 +31,23 @@ aggregated as (
     group by addr, vault_type
     having sum(amount) > 0
 ),
-total_addr as (
-    select distinct addr from aggregated
+
+addr_flags as (
+    select
+        addr,
+        max(case when vault_type like '%usd%' then 1 else 0 end) as is_usd,
+        max(case when vault_type like '%eth%' then 1 else 0 end) as is_eth,
+        max(case when vault_type like '%loop%' then 1 else 0 end) as is_loop,
+        max(case when vault_type not like '%loop%' then 1 else 0 end) as is_non_loop
+    from aggregated
+    group by addr
 )
 
-select count(*) as total_addr from total_addr;
+
+select
+    count(*) as total_addr,
+    sum(is_usd) as usd_addr,
+    sum(is_eth) as eth_addr,
+    sum(is_non_loop) as norm_addr,
+    sum(is_loop) as loop_addr
+from addr_flags;
