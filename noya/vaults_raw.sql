@@ -1,180 +1,79 @@
-with nmorpho_usd as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x8603A9AF9D6812A96dCA4c2C40C5025601DEDcF8 -- NOYA morpho USD CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x8603A9AF9D6812A96dCA4c2C40C5025601DEDcF8
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+with vaults as (
+    select * from (values
+        ('nmorpho_usd',        0x8603A9AF9D6812A96dCA4c2C40C5025601DEDcF8, 1e6),
+        ('bnmorpho_usd',       0xB61E561f62D572197e59880a9F69fc6cb4463115, 1e6),
+        ('nmorpho_eth',        0xe133fb96ba6F4C35280FdD6a7E6381694d8B8347, 1e18),
+        ('bnmorpho_eth',       0x168E80D05ee1d63aAcb682e0Def1B02BC4d45de8, 1e18),
+        ('nmorpho_usd_loop',   0xB1bb9583f5A74CED10e413Cc44245e05843BADEE, 1e6),
+        ('bnmorpho_usd_loop',  0xA04FCCc48AeB3C0Fbc5c6F8d98dB8f6be3f65979, 1e6),
+        ('nmorpho_eth_loop',   0x062e9eE0eeBF0EDdfC2Dd79DAd905F3B4C7838cB, 1e18),
+        ('bnmorpho_eth_loop',  0x5b08789eD14F37ffA67236088D03692528A96c5c, 1e18)
+    ) as t(vault_type, contract_address, divisor)
 ),
-bnmorpho_usd as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xB61E561f62D572197e59880a9F69fc6cb4463115 -- Bonding NOYA morpho USD CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xB61E561f62D572197e59880a9F69fc6cb4463115
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+
+raw_transfers as (
+    select
+        date_trunc('day', evt_block_time) as dt,
+        v.vault_type,
+        case
+            when e."from" = 0x0000000000000000000000000000000000000000 then cast(e.value as double) / v.divisor
+            when e."to"   = 0x0000000000000000000000000000000000000000 then -cast(e.value as double) / v.divisor
+            else 0
+        end as amount
+    from erc20_base.evt_transfer e
+    join vaults v on e.contract_address = v.contract_address
+    where
+        (e."from" = 0x0000000000000000000000000000000000000000 or e."to" = 0x0000000000000000000000000000000000000000)
 ),
-nmorpho_eth as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xe133fb96ba6F4C35280FdD6a7E6381694d8B8347 -- NOYA Morpho ETH CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xe133fb96ba6F4C35280FdD6a7E6381694d8B8347
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+
+daily_amounts as (
+    select
+        dt,
+        vault_type,
+        sum(amount) as daily_amount
+    from raw_transfers
+    group by dt, vault_type
 ),
-bnmorpho_eth as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x168E80D05ee1d63aAcb682e0Def1B02BC4d45de8 -- Bonding NOYA Morpho ETH CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x168E80D05ee1d63aAcb682e0Def1B02BC4d45de8
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+
+all_dates as (
+    select distinct dt from daily_amounts
 ),
-nmorpho_usd_loop as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xB1bb9583f5A74CED10e413Cc44245e05843BADEE -- NOYA Morpho USD Looping CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xB1bb9583f5A74CED10e413Cc44245e05843BADEE
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+
+all_combinations as (
+    select dt, vault_type
+    from all_dates, vaults
 ),
-bnmorpho_usd_loop as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xA04FCCc48AeB3C0Fbc5c6F8d98dB8f6be3f65979 -- Bonding NOYA Morpho USD Looping CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e6 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0xA04FCCc48AeB3C0Fbc5c6F8d98dB8f6be3f65979
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+
+filled_data as (
+    select
+        c.dt,
+        c.vault_type,
+        coalesce(d.daily_amount, 0) as daily_amount
+    from all_combinations c
+    left join daily_amounts d
+        on c.dt = d.dt and c.vault_type = d.vault_type
 ),
-nmorpho_eth_loop as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x062e9eE0eeBF0EDdfC2Dd79DAd905F3B4C7838cB -- NOYA Morpho ETH Looping CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x062e9eE0eeBF0EDdfC2Dd79DAd905F3B4C7838cB
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
-),
-bnmorpho_eth_loop as (
-    select date_trunc('day', evt_block_time) as dt
-         , sum(amount) as amount
-    from 
-        (select evt_block_time
-              , cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x5b08789eD14F37ffA67236088D03692528A96c5c -- Bonding NOYA Morpho ETH Looping CA
-        and "from" = 0x0000000000000000000000000000000000000000
-        
-        union all 
-        
-        select evt_block_time
-             , -cast(value as double)/1e18 as amount
-        from erc20_base.evt_transfer
-        where contract_address = 0x5b08789eD14F37ffA67236088D03692528A96c5c
-        and to = 0x0000000000000000000000000000000000000000
-        ) as raw 
-    group by 1
+
+cumulative as (
+    select
+        dt,
+        vault_type,
+        sum(daily_amount) over (partition by vault_type order by dt) as cum_amount
+    from filled_data
 )
 
 
-select dt
-     , sum(nu.amount) over(order by dt asc) as nmorpho_usd
-     , sum(bu.amount) over(order by dt asc) as bnmorpho_usd
-     , sum(ne.amount) over(order by dt asc) as nmorpho_eth
-     , sum(be.amount) over(order by dt asc) as bnmorpho_eth
-     , sum(nul.amount) over(order by dt asc) as nmorpho_usd_loop
-     , sum(bul.amount) over(order by dt asc) as bnmorpho_usd_loop
-     , sum(nel.amount) over(order by dt asc) as nmorpho_eth_loop
-     , sum(bel.amount) over(order by dt asc) as bnmorpho_eth_loop
-from nmorpho_usd nu
-left join bnmorpho_usd bu using(dt)
-left join nmorpho_eth ne using(dt)
-left join bnmorpho_eth be using(dt)
-left join nmorpho_usd_loop nul using(dt)
-left join bnmorpho_usd_loop bul using(dt)
-left join nmorpho_eth_loop nel using(dt)
-left join bnmorpho_eth_loop bel using(dt)
+select
+    dt,
+    max(case when vault_type = 'nmorpho_usd' then cum_amount end) as nmorpho_usd,
+    max(case when vault_type = 'bnmorpho_usd' then cum_amount end) as bnmorpho_usd,
+    max(case when vault_type = 'nmorpho_eth' then cum_amount end) as nmorpho_eth,
+    max(case when vault_type = 'bnmorpho_eth' then cum_amount end) as bnmorpho_eth,
+    max(case when vault_type = 'nmorpho_usd_loop' then cum_amount end) as nmorpho_usd_loop,
+    max(case when vault_type = 'bnmorpho_usd_loop' then cum_amount end) as bnmorpho_usd_loop,
+    max(case when vault_type = 'nmorpho_eth_loop' then cum_amount end) as nmorpho_eth_loop,
+    max(case when vault_type = 'bnmorpho_eth_loop' then cum_amount end) as bnmorpho_eth_loop
+from cumulative
+group by dt
+order by dt
 ;
