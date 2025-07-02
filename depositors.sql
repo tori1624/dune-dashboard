@@ -11,6 +11,13 @@ with vaults as (
     ) as t(contract_address, vault_type)
 ),
 
+eth_price as (
+    select price
+    from prices.usd_latest
+    where blockchain = 'tron'
+    and symbol = 'ETH'
+),
+
 transfers as (
     select 
         t.vault_type,
@@ -32,22 +39,30 @@ aggregated as (
     having sum(amount) > 0
 ),
 
-addr_flags as (
+amount as (
     select
         addr,
-        max(case when vault_type like '%usd%' then 1 else 0 end) as is_usd,
-        max(case when vault_type like '%eth%' then 1 else 0 end) as is_eth,
-        max(case when vault_type like '%loop%' then 1 else 0 end) as is_loop,
-        max(case when vault_type not like '%loop%' then 1 else 0 end) as is_non_loop
+        sum(case when vault_type = 'nmorpho_usd' then deposited else 0 end) as nmorpho_usd,
+        sum(case when vault_type = 'nmorpho_eth' then (deposited / 1e12) * (select price from eth_price) else 0 end) as nmorpho_eth,
+        sum(case when vault_type = 'nmorpho_usd_loop' then deposited else 0 end) as nmorpho_usd_loop,
+        sum(case when vault_type = 'nmorpho_eth_loop' then (deposited / 1e12) * (select price from eth_price) else 0 end) as nmorpho_eth_loop
     from aggregated
     group by addr
+),
+
+total_amount as (
+    select 
+        *,
+        nmorpho_usd + nmorpho_eth + nmorpho_usd_loop + nmorpho_eth_loop as total_amount
+    from amount
 )
 
 
 select
-    count(*) as total_addr,
-    sum(is_usd) as usd_addr,
-    sum(is_eth) as eth_addr,
-    sum(is_non_loop) as norm_addr,
-    sum(is_loop) as loop_addr
-from addr_flags;
+    row_number() over(order by total_amount desc) as rank, 
+    row_number() over(order by total_amount asc) as number,
+    *
+from total_amount
+where total_amount > 0
+order by 1 asc
+;
