@@ -22,6 +22,9 @@ Dune Profile : [https://dune.com/dane01](https://dune.com/dane01)
 | HyperUnit | [Link](https://dune.com/dane01/hyperunit) | Unit is the asset tokenization layer on Hyperliquid, enabling seamless deposits and withdrawals for a wide range of assets. |
 | Yala | [Link](https://dune.com/dane01/yala) | Yala is a Bitcoin-native liquidity protocol that enables Bitcoin holders earn real yield from DeFi and RWAs without giving up ownership of their assets. |
 | Noya AI | [Link](https://dune.com/dane01/noya-ai) | NOYA represents a paradigm shift in decentralized finance, introducing a protocol that empowers AI agents to control liquidity across multiple chains with unparalleled trustlessness and precision. |
+| Terminal Finance | [Link](https://dune.com/dane01/terminal-finance) | Terminal Finance is the marketplace for trading reward-bearing digital dollars and institutional assets, designed to serve as the central liquidity hub of Converge.  |
+
+
   
 <br/>
 
