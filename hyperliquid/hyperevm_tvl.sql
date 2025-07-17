@@ -66,6 +66,7 @@ tvl_pivot as (
 
 
 select *,
+       HyperliquidL1 - coalesce(Hyperliquid, 0) as Total,
        HyperliquidL1 
          - coalesce(Hyperliquid, 0) 
          - coalesce(Felix, 0) 
@@ -74,6 +75,6 @@ select *,
          - coalesce(Hyperbeat, 0)
          - coalesce(HyperSwap, 0) as Others
 from tvl_pivot
-where date < current_date
+where date = date_trunc('day', date)
 and date > date '2025-04-01'
 order by date desc;
