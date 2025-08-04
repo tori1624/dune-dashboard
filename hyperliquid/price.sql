@@ -1,7 +1,9 @@
 with url_table as (
     select * from (values
         ('HYPE', 'https://api.coingecko.com/api/v3/coins/hyperliquid/market_chart?vs_currency=usd&days=365'),
-        ('BTC',  'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=365')
+        ('BTC',  'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=365'),
+        ('BNB',  'https://api.coingecko.com/api/v3/coins/binancecoin/market_chart?vs_currency=usd&days=365'),
+        ('BGB',  'https://api.coingecko.com/api/v3/coins/bitget-token/market_chart?vs_currency=usd&days=365')
     ) as t(coin, url)
 ), 
 
@@ -32,7 +34,9 @@ final_data as (
     select
         date,
         max(case when coin = 'HYPE' then price end) as HYPE_price,
-        max(case when coin = 'BTC' then price end) as BTC_price
+        max(case when coin = 'BTC' then price end) as BTC_price,
+        max(case when coin = 'BNB' then price end) as BNB_price,
+        max(case when coin = 'BGB' then price end) as BGB_price
     from price_daily
     group by date
 )
