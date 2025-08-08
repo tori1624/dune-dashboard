@@ -15,26 +15,33 @@ eth_price as (
     select price
     from prices.usd_latest
     where blockchain = 'tron'
-    and symbol = 'ETH'
+      and symbol = 'ETH'
 ),
 
 transfers as (
-    select 
-        t.vault_type,
-        case when e."to" is not null then e."to" else e."from" end as addr,
-        case when e."to" is not null then value / 1e6 else -value / 1e6 end as amount
+    select t.vault_type, e."to" as addr,  value / 1e6 as amount
     from vaults t
     join erc20_base.evt_transfer e
       on e.contract_address = t.contract_address
-    where coalesce(e."to", e."from") <> 0x0000000000000000000000000000000000000000
+    union all
+    select t.vault_type, e."from" as addr, -value / 1e6 as amount
+    from vaults t
+    join erc20_base.evt_transfer e
+      on e.contract_address = t.contract_address
+),
+
+cleaned as (
+    select *
+    from transfers
+    where addr <> 0x0000000000000000000000000000000000000000
 ),
 
 aggregated as (
     select
         addr,
         vault_type,
-        sum(amount) as deposited
-    from transfers
+        sum(amount) as balance
+    from cleaned
     group by addr, vault_type
     having sum(amount) > 0
 ),
@@ -42,10 +49,14 @@ aggregated as (
 amount as (
     select
         addr,
-        sum(case when vault_type = 'nmorpho_usd' then deposited else 0 end) as nmorpho_usd,
-        sum(case when vault_type = 'nmorpho_eth' then (deposited / 1e12) * (select price from eth_price) else 0 end) as nmorpho_eth,
-        sum(case when vault_type = 'nmorpho_usd_loop' then deposited else 0 end) as nmorpho_usd_loop,
-        sum(case when vault_type = 'nmorpho_eth_loop' then (deposited / 1e12) * (select price from eth_price) else 0 end) as nmorpho_eth_loop
+        sum(case when vault_type = 'nmorpho_usd'       then balance else 0 end) as nmorpho_usd,
+        sum(case when vault_type = 'bnmorpho_usd'      then balance else 0 end) as bnmorpho_usd,
+        sum(case when vault_type = 'nmorpho_eth'       then (balance / 1e12) * (select price from eth_price) else 0 end) as nmorpho_eth,
+        sum(case when vault_type = 'bnmorpho_eth'      then (balance / 1e12) * (select price from eth_price) else 0 end) as bnmorpho_eth,
+        sum(case when vault_type = 'nmorpho_usd_loop'  then balance else 0 end) as nmorpho_usd_loop,
+        sum(case when vault_type = 'bnmorpho_usd_loop' then balance else 0 end) as bnmorpho_usd_loop,
+        sum(case when vault_type = 'nmorpho_eth_loop'  then (balance / 1e12) * (select price from eth_price) else 0 end) as nmorpho_eth_loop,
+        sum(case when vault_type = 'bnmorpho_eth_loop' then (balance / 1e12) * (select price from eth_price) else 0 end) as bnmorpho_eth_loop
     from aggregated
     group by addr
 ),
@@ -53,16 +64,18 @@ amount as (
 total_amount as (
     select 
         *,
-        nmorpho_usd + nmorpho_eth + nmorpho_usd_loop + nmorpho_eth_loop as total_amount
+        coalesce(nmorpho_usd,0) + coalesce(bnmorpho_usd,0) +
+        coalesce(nmorpho_eth,0) + coalesce(bnmorpho_eth,0) +
+        coalesce(nmorpho_usd_loop,0) + coalesce(bnmorpho_usd_loop,0) +
+        coalesce(nmorpho_eth_loop,0) + coalesce(bnmorpho_eth_loop,0) as total_amount
     from amount
 )
 
 
 select
     row_number() over(order by total_amount desc) as rank, 
-    row_number() over(order by total_amount asc) as number,
+    row_number() over(order by total_amount asc)  as number,
     *
 from total_amount
 where total_amount > 0
-order by 1 asc
-;
+order by rank asc;
